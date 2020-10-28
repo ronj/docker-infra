@@ -1,0 +1,21 @@
+version: '3'
+
+# This stack exists solely to deploy the infra-network_public overlay network,
+# so that other stacks (including infra-applications) can attach to it.
+# As such it is possible to bring down all stacks, including infra-applications,
+# without creating dependency problems w.r.t. the overlay network.
+
+services:
+  scratch:
+    image: scratch
+    deploy:
+      replicas: 0
+    networks:
+      - public
+
+networks:
+  public:
+    driver: overlay
+    ipam:
+      config:
+        - subnet: 192.168.50.0/24
