@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 
 services:
   # See: https://blog.mikesir87.io/2019/08/running-traefik-on-worker-nodes-more-securely/
@@ -20,7 +20,7 @@ services:
 
   traefik-forward-auth:
     image: thomseddon/traefik-forward-auth:2
-    env_file: ${PWD}/infra/traefik-forward-auth.env
+    env_file: ./traefik-forward-auth.env
     labels:
       - "traefik.http.middlewares.traefik-forward-auth.forwardauth.address=http://traefik-forward-auth:4181"
       - "traefik.http.middlewares.traefik-forward-auth.forwardauth.authResponseHeaders=X-Forwarded-User"
@@ -48,19 +48,18 @@ services:
       - "--certificatesresolvers.letsencrypt.acme.storage=/acme/acme.json"
     volumes:
       - acme-data:/acme
-      - ${PWD}/infra/traefik.yml:/traefik.yml
+      - ./traefik.yml:/traefik.yml
     networks:
       - internal
       - infra-network_public
+    ports:
+      - "80:80"
+      - "443:443"
     healthcheck:
       test: ["CMD", "/traefik", "healthcheck"]
       interval: 60s
       timeout: 3s
       retries: 5
-    deploy:
-      placement:
-        constraints:
-          - node.role == worker
 
   portainer-agent:
     image: portainer/agent
@@ -78,7 +77,7 @@ services:
 
   portainer:
     image: portainer/portainer-ce
-    command: -H tcp://tasks.portainer-agent:9001 --tlsskipverify --no-auth
+    command: -H tcp://tasks.portainer-agent:9001 --tlsskipverify
     volumes:
       - portainer-data:/data
     networks:
