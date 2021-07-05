@@ -1,0 +1,11 @@
+[Unit]
+Description=Docker USB Listener
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/local/bin/docker-swarm-usb-listener-start
+
+[Install]
+WantedBy=default.target
