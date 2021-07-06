@@ -38,7 +38,7 @@ services:
       - "--providers.docker.watch=true"
       - "--providers.docker.exposedbydefault=false"
     volumes:
-      - ./acme.json:/acme.json
+      - ./data/acme.json:/acme.json
     networks:
       - infra-network_public
       - internal
@@ -58,7 +58,7 @@ services:
 
   traefik-forward-auth:
     image: thomseddon/traefik-forward-auth:2
-    env_file: ./traefik-forward-auth.env
+    env_file: ./data/traefik-forward-auth.env
     labels:
       - "traefik.http.middlewares.traefik-forward-auth.forwardauth.address=http://traefik-forward-auth:4181"
       - "traefik.http.middlewares.traefik-forward-auth.forwardauth.authResponseHeaders=X-Forwarded-User"
