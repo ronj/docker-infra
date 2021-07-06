@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  unifi:
+    image: linuxserver/unifi-controller
+    ports:
+      # https://help.ui.com/hc/en-us/articles/218506997-UniFi-Ports-Used
+      - target: 3478
+        published: 3478
+        protocol: udp
+        mode: host
+      - target: 8080
+        published: 8080
+        protocol: tcp
+        mode: host
+      - target: 6789
+        published: 6789
+        protocol: tcp
+        mode: host
+    volumes:
+      - unifi-config:/config
+    networks:
+      - infra-network_public
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.unifi.rule=Host(`unifi.${DOMAIN}`)
+        - traefik.http.routers.unifi.entrypoints=https
+        - traefik.http.routers.unifi.tls=true
+        - traefik.http.routers.unifi.tls.certresolver=letsencrypt
+        - traefik.http.services.unifi.loadbalancer.server.port=8443
+        - traefik.http.services.unifi.loadbalancer.server.scheme=https
+      mode: global
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+
+networks:
+  infra-network_public:
+    external: true
+        
+volumes:
+  unifi-config:
+
