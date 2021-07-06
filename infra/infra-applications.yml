@@ -38,9 +38,12 @@ services:
       - "--providers.docker.swarmmode=true"
       - "--providers.docker.watch=true"
       - "--providers.docker.exposedbydefault=false"
+      - '--providers.docker.defaultrule=Host(`{{ .Name | trimPrefix (normalize (index .Labels "com.docker.stack.namespace")) | trimPrefix "-" }}.${DOMAIN}`)'
+      - "--providers.file.filename=/traefik-dynamic.yml"
       - "--serverstransport.insecureskipverify=true"
     volumes:
       - ./data/acme.json:/acme.json
+      - ./traefik-dynamic.yml:/traefik-dynamic.yml
     networks:
       - infra-network_public
       - internal
@@ -51,7 +54,6 @@ services:
       mode: global
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.api.rule=Host(`traefik.${DOMAIN}`)"
         - "traefik.http.routers.api.entrypoints=https"
         - "traefik.http.routers.api.tls=true"
         - "traefik.http.routers.api.tls.certresolver=letsencrypt"
@@ -93,7 +95,6 @@ services:
       replicas: 1
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.portainer.rule=Host(`portainer.${DOMAIN}`)"
         - "traefik.http.routers.portainer.entrypoints=https"
         - "traefik.http.routers.portainer.tls=true"
         - "treafik.http.routers.portainer.certresolver=letsencrypt"

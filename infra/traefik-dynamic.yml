@@ -1,0 +1,14 @@
+http:
+  routers:
+    homeassistant:
+      rule: "Host(`home.${DOMAIN}`)"
+      entrypoints:
+        - https
+      service: homeassistant
+
+  services:
+    homeassistant:
+      loadbalancer:
+        servers:
+          - url: "http://172.17.0.1:8123"
+

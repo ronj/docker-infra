@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  homeassistant:
+    image: homeassistant/home-assistant
+    volumes:
+      - ${PREFIX}/docker-infra/domotica/data:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /dev/smart_meter:/dev/smart_meter
+      - /dev/zwave:/dev/zwave
+    networks:
+      - outside
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+
+networks:
+  outside:
+    external:
+      name: host
+
