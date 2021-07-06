@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-/usr/local/bin/docker-swarm-usb-listener /dev/zwave homeassistant/homeassistant &
-/usr/local/bin/docker-swarm-usb-listener /dev/smart_meter homeassistant/homeassistant &
+/usr/local/bin/docker-swarm-usb-listener /dev/zwave homeassistant/home-assistant &
+/usr/local/bin/docker-swarm-usb-listener /dev/smart_meter homeassistant/home-assistant &
+wait -n
+

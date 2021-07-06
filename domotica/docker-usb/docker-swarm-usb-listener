@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 docker events --filter "image=$2" --filter "event=start"| \
 while read line; do
