@@ -7,10 +7,31 @@ services:
       - ${PREFIX}/docker-infra/domotica/data:/config
       - /etc/localtime:/etc/localtime:ro
       - /dev/smart_meter:/dev/smart_meter
-      - /dev/zwave:/dev/zwave
     networks:
       - outside
     deploy:
+      # homeassistant is not exposed to Traefik via labels.
+      # See: https://github.com/traefik/traefik/issues/5535
+      mode: global
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+
+  zwave:
+    image: zwavejs/zwavejs2mqtt
+    volumes:
+      - zwavejs:/usr/src/app/store
+      - /dev/zwave:/dev/zwave
+    networks:
+      - infra-network_public
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.zwavejs.entrypoints=https
+        - traefik.http.routers.zwavejs.tls=true
+        - traefik.http.routers.zwavejs.tls.certresolver=letsencrypt
+        - traefik.http.services.zwavejs.loadbalancer.server.port=8091
       mode: global
       placement:
         constraints: [node.role == manager]
@@ -18,7 +39,12 @@ services:
         condition: on-failure
 
 networks:
+  infra-network_public:
+    external: true
   outside:
     external:
       name: host
+
+volumes:
+  zwavejs:
 

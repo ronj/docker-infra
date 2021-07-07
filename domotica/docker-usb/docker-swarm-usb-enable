@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 USBDEV=`readlink -f $1`
 read minor major < <(stat -c '%T %t' $USBDEV)
