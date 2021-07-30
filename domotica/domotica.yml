@@ -35,7 +35,7 @@ services:
         - traefik.http.routers.zwavejs.service=zwavejs
 
         - traefik.http.services.zwavews.loadbalancer.server.port=3000
-        - traefik.http.routers.zwavews.rule=Host(`zwavews.ronj.nl`)
+        - traefik.http.routers.zwavews.rule=Host(`zwavews.${DOMAIN}`)
         - traefik.http.routers.zwavews.entrypoints=http
         - traefik.http.routers.zwavews.priority=2000
         - traefik.http.routers.zwavews.service=zwavews
