@@ -28,10 +28,17 @@ services:
     deploy:
       labels:
         - traefik.enable=true
+        - traefik.http.services.zwavejs.loadbalancer.server.port=8091
         - traefik.http.routers.zwavejs.entrypoints=https
         - traefik.http.routers.zwavejs.tls=true
         - traefik.http.routers.zwavejs.tls.certresolver=letsencrypt
-        - traefik.http.services.zwavejs.loadbalancer.server.port=8091
+        - traefik.http.routers.zwavejs.service=zwavejs
+
+        - traefik.http.services.zwavews.loadbalancer.server.port=3000
+        - traefik.http.routers.zwavews.rule=Host(`zwavews.ronj.nl`)
+        - traefik.http.routers.zwavews.entrypoints=http
+        - traefik.http.routers.zwavews.priority=2000
+        - traefik.http.routers.zwavews.service=zwavews
       mode: global
       placement:
         constraints: [node.role == manager]

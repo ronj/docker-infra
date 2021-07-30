@@ -27,8 +27,11 @@ services:
       - "--entrypoints.http.address=:80"
       - "--entrypoints.http.http.redirections.entrypoint.to=https"
       - "--entrypoints.http.http.redirections.entrypoint.scheme=https"
+      - "--entrypoints.http.http.redirections.entrypoint.priority=1000"
       - "--entrypoints.https.address=:443"
       - "--entrypoints.https.http.tls.certresolver=letsencrypt"
+      - "--entrypoints.dns-udp.address=:53/udp"
+      - "--entrypoints.dns-tcp.address=:53/tcp"
       - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
       - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=http"
       - "--certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}"
@@ -50,6 +53,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      - "53:53/udp"
+      - "53:53/tcp"
     deploy:
       mode: global
       labels:
@@ -65,10 +70,13 @@ services:
   traefik-forward-auth:
     image: thomseddon/traefik-forward-auth:2
     env_file: ./data/traefik-forward-auth.env
-    labels:
-      - "traefik.http.middlewares.traefik-forward-auth.forwardauth.address=http://traefik-forward-auth:4181"
-      - "traefik.http.middlewares.traefik-forward-auth.forwardauth.authResponseHeaders=X-Forwarded-User"
-      - "traefik.http.services.traefik-forward-auth.loadbalancer.server.port=4181"
+    networks:
+      - internal
+    deploy:
+      labels:
+        - "traefik.http.middlewares.traefik-forward-auth.forwardauth.address=http://traefik-forward-auth:4181"
+        - "traefik.http.middlewares.traefik-forward-auth.forwardauth.authResponseHeaders=X-Forwarded-User"
+        - "traefik.http.services.traefik-forward-auth.loadbalancer.server.port=4181"
 
   portainer-agent:
     image: portainer/agent
