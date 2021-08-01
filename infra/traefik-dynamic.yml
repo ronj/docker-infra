@@ -1,7 +1,7 @@
 http:
   routers:
     homeassistant:
-      rule: "Host(`home.{{ env "DOMAIN" }}`)"
+      rule: 'Host(`home.{{ env "DOMAIN" }}`)'
       entrypoints:
         - https
       service: homeassistant
@@ -11,4 +11,3 @@ http:
       loadbalancer:
         servers:
           - url: "http://172.17.0.1:8123"
-
