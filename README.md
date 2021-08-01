@@ -1,3 +1,5 @@
+[![Mega-Linter](https://github.com/ronj/docker-infra/workflows/Mega-Linter/badge.svg?branch=master)](https://github.com/ronj/docker-infra/actions?query=workflow%3AMega-Linter+branch%3Amaster)
+
 # docker-infra
 
 ## Preparation
