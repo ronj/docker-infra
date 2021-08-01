@@ -1,7 +1,7 @@
 http:
   routers:
     homeassistant:
-      rule: "Host(`home.${DOMAIN}`)"
+      rule: "Host(`home.{{ env "DOMAIN" }}`)"
       entrypoints:
         - https
       service: homeassistant

@@ -19,6 +19,8 @@ services:
 
   traefik:
     image: traefik:v2.5
+    environment:
+      DOMAIN: ${DOMAIN}
     command:
       - "--global.checknewversion=false"
       - "--global.sendanonymoususage=false"
