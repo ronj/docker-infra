@@ -4,7 +4,7 @@ services:
   # See: https://blog.mikesir87.io/2019/08/running-traefik-on-worker-nodes-more-securely/
   # for details about the Docker socket proxy.
   docker-socket-proxy:
-    image: tecnativa/docker-socket-proxy
+    image: ghcr.io/tecnativa/docker-socket-proxy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
@@ -20,7 +20,7 @@ services:
   traefik:
     image: traefik:v2.5
     environment:
-      DOMAIN: ${DOMAIN}
+      - DOMAIN
     command:
       - "--global.checknewversion=false"
       - "--global.sendanonymoususage=false"
